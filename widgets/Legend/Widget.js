@@ -163,16 +163,16 @@ _WidgetsInTemplateMixin, BaseWidget, LayerInfos, Legend) {
 
       layerInfosParam = basemapLayerInfosParam.concat(legendUtils.getLayerInfosParam(this.config));
 
-      //BH return layerInfosParam;
+      return layerInfosParam; //BH: Toggle this line and next BH lines to display only layer on current tab in legend
       
       //BH BEGIN
 
-      filteredLayerInfosParam = layerInfosParam.filter(function(layerInfoParam) {
-        if((layerInfoParam.title!==sSegmentsLayer && curTab!=="VOL") || (layerInfoParam.title==sSegmentsLayer && curTab=="VOL")){
-          return layerInfoParam;
-        }
-      });
-      return filteredLayerInfosParam;
+      //filteredLayerInfosParam = layerInfosParam.filter(function(layerInfoParam) {
+      //  if((layerInfoParam.title!==sSegmentsLayer && curTab!=="VOL") || (layerInfoParam.title==sSegmentsLayer && curTab=="VOL")){
+      //    return layerInfoParam;
+      //  }
+      //});
+      //return filteredLayerInfosParam;
 
 
       //BH END

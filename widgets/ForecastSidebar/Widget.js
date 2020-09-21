@@ -111,7 +111,8 @@ var dLineWidth7 = 6.7;
 var dLineWidth8 = 7.7;
 var dLineWidth9 = 8.7;  //widest
 
-var dHaloSize   = 2.0;
+//Label Properties
+var dHaloSize   = 1.5;
 
 var WIDGETPOOLID_LEGEND = 5;
 
@@ -156,6 +157,7 @@ var aSegRndrSEFY    = []; //[SECat][DisplayValue][yearposition] built programati
 var aLabelClassSECh = []; //built programatically
 var aJsonLabelsSECh = []; //built programatically
 var aSegRndrSECh    = []; //[SECat][DisplayValue][yearposition] built programatically
+var labelClassOff;
 
 var aSECatLayerNames = new Array("Population Projections","Household Projections","Typical Employment Projections","Retail Employment Projections","Industrial Employment Projections","Office Employment Projections");
 var aSECatDisplayName = new Array("Population","Households","Typical Employment","Retail Employment","Industrial Employment","Office Employment");
@@ -228,6 +230,7 @@ define(['dojo/_base/declare',
     'dijit/registry',
     'dojo/dom',
     'dojo/dom-style',
+    'dojo/query',
     'dijit/dijit',
     'dojox/charting/Chart',
     'dojox/charting/themes/Claro',
@@ -275,7 +278,7 @@ define(['dojo/_base/declare',
     'jimu/utils',
     'dojox/charting/axis2d/Default',
     'dojo/domReady!'],
-function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, dijit, Chart, Claro, Julie, SimpleTheme, Scatter, Lines, Columns, Legend, Tooltip, TableContainer, ScrollPane, ContentPane, PanelManager, TextBox, LayerInfos, Query, QueryTask, FeatureLayer, FeatureTable, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, TextSymbol, Font, LabelClass, InfoTemplate, Color, Map, ClassBreaksRenderer, Extent, Memory, StoreSeries, Dialog, Button, RadioButton, MutliSelect, CheckedMultiSelect, Select, ComboBox, CheckBox, Observable, cookie, esriLang, jimuUtils) {
+function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, djQuery, dijit, Chart, Claro, Julie, SimpleTheme, Scatter, Lines, Columns, Legend, Tooltip, TableContainer, ScrollPane, ContentPane, PanelManager, TextBox, LayerInfos, Query, QueryTask, FeatureLayer, FeatureTable, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, TextSymbol, Font, LabelClass, InfoTemplate, Color, Map, ClassBreaksRenderer, Extent, Memory, StoreSeries, Dialog, Button, RadioButton, MutliSelect, CheckedMultiSelect, Select, ComboBox, CheckBox, Observable, cookie, esriLang, jimuUtils) {
   //To create a widget, you need to derive from BaseWidget.
   
   return declare([BaseWidget], {
@@ -306,6 +309,11 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       
       var parent = this;
       forecastWidget = this;
+      
+      this.map.on("zoom-end", function (){  
+          parent._changeZoom();  
+      });  
+      
       
       //ABOUT WIDGET CONTROL - OPEN ON FIRST USE///////////////////////////////////////////////////////
               
@@ -361,7 +369,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       
       // create a text symbol to define the style of labels
       var volumeLabel = new TextSymbol();
-      volumeLabel.font.setSize("11pt");
+      volumeLabel.font.setSize("8pt");
       volumeLabel.font.setFamily("arial");
       volumeLabel.font.setWeight(Font.WEIGHT_BOLD);
       volumeLabel.setHaloColor(sCWhite);
@@ -390,6 +398,12 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
                                    {minValue: 20000,   maxValue: Infinity, symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[6]), dLineWidth7), label: "More than 20,000"});
 
 
+      //Setup empy volume label class for when toggle is off
+        labelClassOff = ({
+          minScale: minScaleForLabels,
+          labelExpressionInfo: {expression: ""}
+        })
+        labelClassOff.symbol = volumeLabel;
 
       //Setup for AADT Forecast Years
       
@@ -417,10 +431,18 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         //Radio Buttons Change Event
         dom.byId("rbFY" + i).onchange = function(isChecked) {
           if(isChecked) {
+
+            //get integer value of last character of rb value
             var j;
-            j = parseInt(this.value);
+            j = parseInt(this.value.substr(-1));
+
             lyrSegments.setRenderer(aSegRndrFY[j]);
-            lyrSegments.setLabelingInfo([ aLabelClassFY[j] ]);
+
+            if (dom.byId("chkVolLabels_Vol").checked == true) {
+              lyrSegments.setLabelingInfo([ aLabelClassFY[j] ]);
+            } else {
+              lyrSegments.setLabelingInfo([ labelClassOff ]);
+            }
             lyrSegments.setDefinitionExpression(aFieldNamesFY[j] + ">1"); 
             lyrSegments.refresh();
             parent.SetLegendBarFY(aCR_BertGrad9,aLegendNameFY[j]);
@@ -454,10 +476,19 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         //Radio Buttons Change Event
         dom.byId("rbCh" + i).onchange = function(isChecked) {
           if(isChecked) {
+
+            //get integer value of last character of rb value
             var j;
-            j = parseInt(this.value);
+            j = parseInt(this.value.substr(-1));
+            
             lyrSegments.setRenderer(aSegRndrCh[j]);
-            lyrSegments.setLabelingInfo([ aLabelClassCh[j] ]);
+
+            if (dom.byId("chkVolLabels_Vol").checked == true) {
+              lyrSegments.setLabelingInfo([ aLabelClassCh[j] ]);
+            } else {
+              lyrSegments.setLabelingInfo([ labelClassOff ]);
+            }
+            
             lyrSegments.setDefinitionExpression(aFieldNamesCh[j] + ">-1000000");
             lyrSegments.refresh();
             parent.SetLegendBarCh(aCR_Change7,aLegendNameCh[j]);
@@ -759,6 +790,9 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         }
       }
       
+      //Setup empy volume label class for when toggle is off
+      labelClassSEBase = 0;////BH
+      
       parent=this;
       
       // Populate classbreaks object - for forecast years
@@ -994,7 +1028,30 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       bStartUTP = true;
     },
 
-
+    _changeZoom: function(){
+      dScale = forecastWidget.map.getScale();
+      if(dScale < minScaleForLabels){
+        //enable the checkbox
+        
+        dom.byId("VOL_LABELS_Vol").style.display = '';
+        
+        if (curTab == "SE" && dom.byId("SE_TOGGLEVOL").innerHTML==sHideTrafficLayerText) {
+          dom.byId("VOL_LABELS_SE").style.display = '';
+        }
+        if (curTab == "UTP" && dom.byId("UTP_TOGGLEVOL").innerHTML==sHideTrafficLayerText) {
+          dom.byId("VOL_LABELS_UTP").style.display = '';
+        }
+        
+        
+      }else{
+        //diable the checkbox
+        dom.byId("VOL_LABELS_Vol").style.display = 'none';
+        dom.byId("VOL_LABELS_SE").style.display = 'none';
+        dom.byId("VOL_LABELS_UTP").style.display = 'none';
+      }
+    },
+    
+    
     // USER DEFINED FUNCTIONS - SEGMENTS
     
     _updateLayerDisplayVol: function() {
@@ -1772,7 +1829,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         
           // create a text symbol to define the style of labels
           var SECatLabel = new TextSymbol();
-          SECatLabel.font.setSize("9pt");
+          SECatLabel.font.setSize("8pt");
           SECatLabel.font.setFamily("arial");
           SECatLabel.setColor(new Color([128,128,128]));
           SECatLabel.font.setWeight(Font.WEIGHT_BOLD);
@@ -1824,11 +1881,10 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         
           // create a text symbol to define the style of labels
           var SECatLabel = new TextSymbol();
-          SECatLabel.font.setSize("9pt");
+          SECatLabel.font.setSize("8pt");
           SECatLabel.font.setFamily("arial");
           SECatLabel.setColor(new Color([128,128,128]));
           SECatLabel.font.setWeight(Font.WEIGHT_BOLD);
-          SECatLabel.font.setSize("9pt");
           SECatLabel.setHaloColor(sCWhite);
           SECatLabel.setHaloSize(dHaloSize);
 
@@ -2118,6 +2174,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       this._updateLayerDisplayVol();
       
       lyrTAZSelect.hide();
+      this._changeZoom();
       
     },
     
@@ -2153,6 +2210,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       dom.byId("UTP_TOGGLEVOL").style.display = 'none';
       
       this._updateVolToggles();
+      this._changeZoom();
       
     },
     
@@ -2188,7 +2246,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       dom.byId("UTP_TOGGLEVOL").style.display = '';
       
       this._updateVolToggles();
-
+      this._changeZoom();
     },
     
     _turnOnAdvanced: function() {
@@ -2205,16 +2263,94 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       }
       
       this._selectVol();
-
+      this._changeZoom();
     },
     
     _turnOnBasic: function() {
       console.log('_turnOnBasic');
 
       dom.byId("TAB_CONTROL").style.display = 'none';
-
+      
       this._selectVol();
+      this._checkVolLabel();
+      this._changeZoom();
+      
+    },
+    
+    _checkSELabel: function() {
+      
+    },
+    
+    _checkVolLabel: function() {
 
+      //get radio button value
+      var rbValue;
+      rbValue = djQuery('input[type=radio][name=lyrdisplay]:checked')[0].value;
+
+      //get last character of radio button value
+      var j;
+      j = parseInt(rbValue.substr(-1))
+      
+      if (dom.byId("chkVolLabels_Vol").checked == true && rbValue.substring(0,2) == "Ch") {
+        lyrSegments.setLabelingInfo([ aLabelClassCh[j] ]);
+      } else if (dom.byId("chkVolLabels_Vol").checked == true && rbValue.substring(0,2) == "FY") {
+        lyrSegments.setLabelingInfo([ aLabelClassFY[j] ]);
+      } else {
+        lyrSegments.setLabelingInfo([ labelClassOff ]);
+      }
+      
+    },
+    
+    _checkVolLabel_Vol: function() {
+      
+      if (dom.byId("chkVolLabels_Vol").checked == true) {
+        dom.byId("chkVolLabels_SE").checked = true;
+        dom.byId("chkVolLabels_UTP").checked = true;
+      } else {
+        dom.byId("chkVolLabels_SE").checked = false;
+        dom.byId("chkVolLabels_UTP").checked = false;
+      }
+      
+      this._checkVolLabel();
+    },
+    
+    _checkVolLabel_Vol: function() {
+      
+      if (dom.byId("chkVolLabels_Vol").checked == true) {
+        dom.byId("chkVolLabels_SE").checked = true;
+        dom.byId("chkVolLabels_UTP").checked = true;
+      } else {
+        dom.byId("chkVolLabels_SE").checked = false;
+        dom.byId("chkVolLabels_UTP").checked = false;
+      }
+      
+      this._checkVolLabel();
+    },
+    
+    _checkVolLabel_SE: function() {
+      
+      if (dom.byId("chkVolLabels_SE").checked == true) {
+        dom.byId("chkVolLabels_Vol").checked = true;
+        dom.byId("chkVolLabels_UTP").checked = true;
+      } else {
+        dom.byId("chkVolLabels_Vol").checked = false;
+        dom.byId("chkVolLabels_UTP").checked = false;
+      }
+      
+      this._checkVolLabel();
+    },
+    
+    _checkVolLabel_UTP: function() {
+      
+      if (dom.byId("chkVolLabels_UTP").checked == true) {
+        dom.byId("chkVolLabels_Vol").checked = true;
+        dom.byId("chkVolLabels_SE").checked = true;
+      } else {
+        dom.byId("chkVolLabels_Vol").checked = false;
+        dom.byId("chkVolLabels_SE").checked = false;
+      }
+      
+      this._checkVolLabel();
     },
     
     _toggleVol_SE: function() {
@@ -2222,11 +2358,18 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       
       if(dom.byId("SE_TOGGLEVOL").innerHTML==sShowTrafficLayerText) {
         dom.byId("SE_TOGGLEVOL").innerHTML = sHideTrafficLayerText;
+        dom.byId("VOL_LABELS_Vol").style.display = '';
+        dom.byId("VOL_LABELS_SE").style.display = '';
+        dom.byId("VOL_LABELS_UTP").style.display = '';
       } else {
         dom.byId("SE_TOGGLEVOL").innerHTML = sShowTrafficLayerText;
+        dom.byId("VOL_LABELS_Vol").style.display = 'none';
+        dom.byId("VOL_LABELS_SE").style.display = 'none';
+        dom.byId("VOL_LABELS_UTP").style.display = 'none';
       }
       this._updateVolToggles();
       this._updateLayerDisplayVol();
+      this._changeZoom();
     },
     
     _toggleVol_UTP: function() {
@@ -2234,11 +2377,18 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       
       if(dom.byId("UTP_TOGGLEVOL").innerHTML==sShowTrafficLayerText) {
         dom.byId("UTP_TOGGLEVOL").innerHTML = sHideTrafficLayerText;
+        dom.byId("VOL_LABELS_Vol").style.display = '';
+        dom.byId("VOL_LABELS_SE").style.display = '';
+        dom.byId("VOL_LABELS_UTP").style.display = '';
       } else {
         dom.byId("UTP_TOGGLEVOL").innerHTML = sShowTrafficLayerText;
+        dom.byId("VOL_LABELS_Vol").style.display = 'none';
+        dom.byId("VOL_LABELS_SE").style.display = 'none';
+        dom.byId("VOL_LABELS_UTP").style.display = 'none';
       }
       this._updateVolToggles();
       this._updateLayerDisplayVol();
+      this._changeZoom();
     },
     
     _updateVolToggles: function() {
@@ -2247,18 +2397,40 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       if(dom.byId("SE_TOGGLEVOL").innerHTML==sShowTrafficLayerText) {
         dom.byId("SE_TOGGLEVOL").classList.remove('toggleVolSelected');
         dom.byId("SE_TOGGLEVOL").classList.add('toggleVolUnselected');
+        if (curTab == "SE") {
+          dom.byId("VOL_LABELS_Vol").style.display = 'none';
+          dom.byId("VOL_LABELS_SE").style.display = 'none';
+          dom.byId("VOL_LABELS_UTP").style.display = 'none';
+        }
       } else {
         dom.byId("SE_TOGGLEVOL").classList.remove('toggleVolUnselected');
         dom.byId("SE_TOGGLEVOL").classList.add('toggleVolSelected');
+        if (curTab == "SE") {
+          dom.byId("VOL_LABELS_Vol").style.display = '';
+          dom.byId("VOL_LABELS_SE").style.display = '';
+          dom.byId("VOL_LABELS_UTP").style.display = '';
+        }
       }
       
       if(dom.byId("UTP_TOGGLEVOL").innerHTML==sShowTrafficLayerText) {
         dom.byId("UTP_TOGGLEVOL").classList.remove('toggleVolSelected');
         dom.byId("UTP_TOGGLEVOL").classList.add('toggleVolUnselected');
+        if (curTab == "UTP") {
+          dom.byId("VOL_LABELS_Vol").style.display = 'none';
+          dom.byId("VOL_LABELS_SE").style.display = 'none';
+          dom.byId("VOL_LABELS_UTP").style.display = 'none';
+        }
       } else {
         dom.byId("UTP_TOGGLEVOL").classList.remove('toggleVolUnselected');
         dom.byId("UTP_TOGGLEVOL").classList.add('toggleVolSelected');
+        if (curTab == "UTP") {
+          dom.byId("VOL_LABELS_Vol").style.display = '';
+          dom.byId("VOL_LABELS_SE").style.display = '';
+          dom.byId("VOL_LABELS_UTP").style.display = '';
+        }
       }
+
+      
       
     },
     

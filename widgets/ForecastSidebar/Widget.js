@@ -85,19 +85,19 @@ var aCR_Change7    = new Array(sCBlue3,sCBlue2,sCDefaultGrey,sCRed1,sCRed2,sCRed
 
 //AADT Arrays for Forecast Years (FY)
 var aFieldNamesFY = new Array("AADT2017","F2019","F2024","F2030","F2040","F2050");
-var aTextFY = new Array("2017 Historic","2019 Forecast <small>(WFRC)</small>","2024 Forecast <small>(WFRC)</small>","2030 Forecast <small>(WFRC)</small>","2040 Forecast <small>(WFRC)</small>","2050 Forecast");
+var aTextFY = new Array("2017 Historic","2019 Forecast","2024 Forecast","2030 Forecast","2040 Forecast","2050 Forecast");
 var aLabelClassFY = []; //built programatically
 var aJsonLabelsFY = []; //built programatically
 var aSegRndrFY    = [];
 var aLegendNameFY = new Array("2017 AADT Historic","2019 AADT Forecast","2024 AADT Forecast","2030 AADT Forecast", "2040 AADT Forecast","2050 AADT Forecast");
 
 //Change Arrays (Ch)
-var aFieldNamesCh = new Array("Ch17to50","Ch17to19","Ch19to24","Ch24to30","Ch30to40","Ch40to50");
-var aTextCh = new Array("2017 to 2050","2017 to 2019 <small>(WFRC)</small>","2019 to 2024 <small>(WFRC)</small>","2024 to 2030 <small>(WFRC)</small>","2030 to 2040 <small>(WFRC)</small>","2040 to 2050 <small>(WFRC)</small>");
+var aFieldNamesCh = new Array("Ch17to50","Ch19to50","Ch19to24","Ch24to30","Ch30to40","Ch40to50");
+var aTextCh = new Array("2017 to 2050","2019 to 2050","2019 to 2024","2024 to 2030","2030 to 2040","2040 to 2050");
 var aLabelClassCh = []; //built programatically
 var aJsonLabelsCh = []; //built programatically
 var aSegRndrCh    = [];
-var aLegendNameCh = new Array("2017 to 2050 AADT Change","2017 to 2019 AADT Change","2019 to 2024 AADT Change","2024 to 2030 AADT Change","2030 to 2040 AADT Change","2040 to 2050 AADT Change");
+var aLegendNameCh = new Array("2017 to 2050 AADT Change","2019 to 2050 AADT Change","2019 to 2024 AADT Change","2024 to 2030 AADT Change","2030 to 2040 AADT Change","2040 to 2050 AADT Change");
 
 //Line Widths
 var dLineWidth0 = 0.1;

@@ -25,7 +25,7 @@
   "appId": "",
   "authorizedCrossOriginDomains": [],
   "title": "<div class=\"attribute-custom-style\"><font color=\"#0B3C5E\"><strong>  Utah Statewide Annual Average Daily Traffic (AADT) - Historic &amp; Forecast</strong></font></div>",
-  "subtitle": "<div class=\"attribute-custom-style\"><font color=\"#0B3C5E\">WFRC 2019 RTP 8.3.1 20200508</font></div>",
+  "subtitle": "<div class=\"attribute-custom-style\"><font color=\"#0B3C5E\">Last Updated December 13, 2021</font></div>",
   "keepAppState": true,
   "logo": "images/logo.png",
   "geometryService": "https://utility.arcgisonline.com/arcgis/rest/services/Geometry/GeometryServer",
@@ -255,7 +255,7 @@
       "right": 0,
       "bottom": 0
     },
-    "itemId": "50ee830ed36348a4834c370541b192e0",
+    "itemId": "ce2cbf234357420f91a18392f6ade7a7",
     "mapOptions": {},
     "id": "map",
     "portalUrl": "http://wfrc.maps.arcgis.com",
@@ -467,7 +467,9 @@
   "isWebTier": false,
   "httpProxy": {
     "useProxy": true,
-    "url": "/proxy.js"
+    "alwaysUseProxy": false,
+    "url": "",
+    "rules": []
   },
   "dataSource": {
     "dataSources": {},

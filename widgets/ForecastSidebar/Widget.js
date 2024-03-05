@@ -84,20 +84,20 @@ var aCR_BertGrad9  = new Array(sCBertGrad1,sCBertGrad2,sCBertGrad3,sCBertGrad4,s
 var aCR_Change7    = new Array(sCBlue3,sCBlue2,sCDefaultGrey,sCRed1,sCRed2,sCRed3,sCRed4);
 
 //AADT Arrays for Forecast Years (FY)
-var aFieldNamesFY = new Array("AADT2017","F2019","F2024","F2030","F2040","F2050");
-var aTextFY = new Array("2017 Historic","2019 Forecast","2024 Forecast","2030 Forecast","2040 Forecast","2050 Forecast");
+var aFieldNamesFY = new Array("AADT2019","F2024","F2030","F2040","F2050");
+var aTextFY = new Array("2019 Historic","2024 Forecast","2030 Forecast","2040 Forecast","2050 Forecast");
 var aLabelClassFY = []; //built programatically
 var aJsonLabelsFY = []; //built programatically
 var aSegRndrFY    = [];
-var aLegendNameFY = new Array("2017 AADT Historic","2019 AADT Forecast","2024 AADT Forecast","2030 AADT Forecast", "2040 AADT Forecast","2050 AADT Forecast");
+var aLegendNameFY = new Array("2019 AADT Historic","2024 AADT Forecast","2030 AADT Forecast", "2040 AADT Forecast","2050 AADT Forecast");
 
 //Change Arrays (Ch)
-var aFieldNamesCh = new Array("Ch17to50","Ch19to50","Ch19to24","Ch24to30","Ch30to40","Ch40to50");
-var aTextCh = new Array("2017 to 2050","2019 to 2050","2019 to 2024","2024 to 2030","2030 to 2040","2040 to 2050");
+var aFieldNamesCh = new Array("Ch19to50","Ch19to24","Ch24to30","Ch30to40","Ch40to50");
+var aTextCh = new Array("2019 to 2050","2019 to 2024","2024 to 2030","2030 to 2040","2040 to 2050");
 var aLabelClassCh = []; //built programatically
 var aJsonLabelsCh = []; //built programatically
 var aSegRndrCh    = [];
-var aLegendNameCh = new Array("2017 to 2050 AADT Change","2019 to 2050 AADT Change","2019 to 2024 AADT Change","2024 to 2030 AADT Change","2030 to 2040 AADT Change","2040 to 2050 AADT Change");
+var aLegendNameCh = new Array("2019 to 2050 AADT Change","2019 to 2024 AADT Change","2024 to 2030 AADT Change","2030 to 2040 AADT Change","2040 to 2050 AADT Change");
 
 //Line Widths
 var dLineWidth0 = 0.1;
@@ -498,10 +498,10 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
 
       //Set to default layer to 2017 that is selected in HTML
       
-      lyrSegments.setRenderer(aSegRndrFY[5]);
-      lyrSegments.setLabelingInfo([ aLabelClassFY[5] ]);
+      lyrSegments.setRenderer(aSegRndrFY[4]);
+      lyrSegments.setLabelingInfo([ aLabelClassFY[4] ]);
       lyrSegments.refresh();
-      this.SetLegendBarFY(aCR_BertGrad9,aLegendNameFY[5]);
+      this.SetLegendBarFY(aCR_BertGrad9,aLegendNameFY[4]);
 
       lyrSegments.show();
 
@@ -987,6 +987,8 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       
       //UTP STARTUP///////////////////////////////////////////////////////////////////////////////////////////
 
+      // LAYER GONE SO DON'T RUN
+      return;
 
       //Initialize layers objects
       var layerInfosObject = LayerInfos.getInstanceSync();
@@ -1038,16 +1040,16 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         if (curTab == "SE" && dom.byId("SE_TOGGLEVOL").innerHTML==sHideTrafficLayerText) {
           dom.byId("VOL_LABELS_SE").style.display = '';
         }
-        if (curTab == "UTP" && dom.byId("UTP_TOGGLEVOL").innerHTML==sHideTrafficLayerText) {
-          dom.byId("VOL_LABELS_UTP").style.display = '';
-        }
+        //if (curTab == "UTP" && dom.byId("UTP_TOGGLEVOL").innerHTML==sHideTrafficLayerText) {
+        //  dom.byId("VOL_LABELS_UTP").style.display = '';
+        //}
         
         
       }else{
         //diable the checkbox
         dom.byId("VOL_LABELS_Vol").style.display = 'none';
         dom.byId("VOL_LABELS_SE").style.display = 'none';
-        dom.byId("VOL_LABELS_UTP").style.display = 'none';
+        //dom.byId("VOL_LABELS_UTP").style.display = 'none';
       }
     },
     
@@ -1215,16 +1217,15 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         
         //Update Table
 
-        dom.byId("vol2019value").innerHTML= "--";
         dom.byId("vol2024value").innerHTML= "--";
         dom.byId("vol2030value").innerHTML= "--";
         dom.byId("vol2040value").innerHTML= "--";
         dom.byId("vol2050value").innerHTML= "--";
         
-        if (tSSObs.data.length>=18 && tSSObs.data[17].y !== undefined) {
-          dom.byId("vol2017value").innerHTML= this._NumberWithCommas(tSSObs.data[17].y);
+        if (tSSObs.data.length>=20 && tSSObs.data[19].y !== undefined) {
+          dom.byId("vol2019value").innerHTML= this._NumberWithCommas(tSSObs.data[19].y);
         } else {
-          dom.byId("vol2017value").innerHTML= "--";
+          dom.byId("vol2019value").innerHTML= "--";
         }
         
         for (var i=0; i<tSSFor.data.length; i++) {
@@ -2097,6 +2098,9 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
     _updateExternalLayerDisplayUTP: function() {
       console.log('_updateExternalLayerDisplayUTP');
       
+      //LAYER GONE SO DON'T RUN
+      return;
+
       if (dom.byId("chkSegLayerOnUTP").checked == true) {
         lyrSegments.show(); 
       } else {
@@ -2111,6 +2115,9 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
     
     _updateLayerDisplayUTP: function() {
       console.log('_updateLayerDisplayUTP');
+
+      // LAYER GONE SO DON'T RUN
+      return;
       
       var _bRds = dom.byId("chkRoads").checked;
       var _bTrn = dom.byId("chkTransit").checked;
@@ -2155,19 +2162,19 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       dom.byId("SE_CONTROL").classList.remove('selectedToggle');
       dom.byId("SE_CONTROL").classList.add('unselectedToggle');
       
-      dom.byId("UTP_CONTROL").classList.remove('selectedToggle');
-      dom.byId("UTP_CONTROL").classList.add('unselectedToggle');
+      //dom.byId("UTP_CONTROL").classList.remove('selectedToggle');
+      //dom.byId("UTP_CONTROL").classList.add('unselectedToggle');
       
       dom.byId("VOL_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_VOL_blue.png')";
       dom.byId("SE_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_SE_white.png')";
-      dom.byId("UTP_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_UTP_white.png')";
+      //dom.byId("UTP_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_UTP_white.png')";
       
       dom.byId("VOL_SECTION").style.display = '';
       dom.byId("SE_SECTION").style.display = 'none';
-      dom.byId("UTP_SECTION").style.display = 'none';
+      //dom.byId("UTP_SECTION").style.display = 'none';
 
       dom.byId("SE_TOGGLEVOL").style.display = 'none';
-      dom.byId("UTP_TOGGLEVOL").style.display = 'none';
+      //dom.byId("UTP_TOGGLEVOL").style.display = 'none';
       
       this._updateLayerDisplaySE();
       this._updateLayerDisplayUTP();
@@ -2191,16 +2198,16 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       dom.byId("SE_CONTROL").classList.remove('unselectedToggle');
       dom.byId("SE_CONTROL").classList.add('selectedToggle');
       
-      dom.byId("UTP_CONTROL").classList.remove('selectedToggle');
-      dom.byId("UTP_CONTROL").classList.add('unselectedToggle');
+      //dom.byId("UTP_CONTROL").classList.remove('selectedToggle');
+      //dom.byId("UTP_CONTROL").classList.add('unselectedToggle');
       
       dom.byId("VOL_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_VOL_white.png')";
       dom.byId("SE_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_SE_blue.png')";
-      dom.byId("UTP_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_UTP_white.png')";
+      //dom.byId("UTP_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_UTP_white.png')";
       
       dom.byId("VOL_SECTION").style.display = 'none';
       dom.byId("SE_SECTION").style.display = '';
-      dom.byId("UTP_SECTION").style.display = 'none';
+      //dom.byId("UTP_SECTION").style.display = 'none';
       
       this._updateLayerDisplaySE();
       this._updateLayerDisplayUTP();
@@ -2216,6 +2223,9 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
     
     _selectUTP: function() {
       console.log('_selectUTP');
+      
+      //LAYER GONE SO DON'T RUN
+      return;
       
       if (curTab=="UTP") return;
       
@@ -2258,9 +2268,9 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         this._startupSE();
       }
       
-      if (!bStartUTP) {
-        this._startupUTP();
-      }
+      //if (!bStartUTP) {
+      //  this._startupUTP();
+      //}
       
       this._selectVol();
       this._changeZoom();
@@ -2305,10 +2315,10 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       
       if (dom.byId("chkVolLabels_Vol").checked == true) {
         dom.byId("chkVolLabels_SE").checked = true;
-        dom.byId("chkVolLabels_UTP").checked = true;
+        //dom.byId("chkVolLabels_UTP").checked = true;
       } else {
         dom.byId("chkVolLabels_SE").checked = false;
-        dom.byId("chkVolLabels_UTP").checked = false;
+        //dom.byId("chkVolLabels_UTP").checked = false;
       }
       
       this._checkVolLabel();
@@ -2318,10 +2328,10 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       
       if (dom.byId("chkVolLabels_Vol").checked == true) {
         dom.byId("chkVolLabels_SE").checked = true;
-        dom.byId("chkVolLabels_UTP").checked = true;
+        //dom.byId("chkVolLabels_UTP").checked = true;
       } else {
         dom.byId("chkVolLabels_SE").checked = false;
-        dom.byId("chkVolLabels_UTP").checked = false;
+        //dom.byId("chkVolLabels_UTP").checked = false;
       }
       
       this._checkVolLabel();
@@ -2331,10 +2341,10 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       
       if (dom.byId("chkVolLabels_SE").checked == true) {
         dom.byId("chkVolLabels_Vol").checked = true;
-        dom.byId("chkVolLabels_UTP").checked = true;
+        //dom.byId("chkVolLabels_UTP").checked = true;
       } else {
         dom.byId("chkVolLabels_Vol").checked = false;
-        dom.byId("chkVolLabels_UTP").checked = false;
+        //dom.byId("chkVolLabels_UTP").checked = false;
       }
       
       this._checkVolLabel();
@@ -2344,10 +2354,10 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       
       if (dom.byId("chkVolLabels_UTP").checked == true) {
         dom.byId("chkVolLabels_Vol").checked = true;
-        dom.byId("chkVolLabels_SE").checked = true;
+        //dom.byId("chkVolLabels_SE").checked = true;
       } else {
         dom.byId("chkVolLabels_Vol").checked = false;
-        dom.byId("chkVolLabels_SE").checked = false;
+        //dom.byId("chkVolLabels_SE").checked = false;
       }
       
       this._checkVolLabel();
@@ -2360,12 +2370,12 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         dom.byId("SE_TOGGLEVOL").innerHTML = sHideTrafficLayerText;
         dom.byId("VOL_LABELS_Vol").style.display = '';
         dom.byId("VOL_LABELS_SE").style.display = '';
-        dom.byId("VOL_LABELS_UTP").style.display = '';
+        //dom.byId("VOL_LABELS_UTP").style.display = '';
       } else {
         dom.byId("SE_TOGGLEVOL").innerHTML = sShowTrafficLayerText;
         dom.byId("VOL_LABELS_Vol").style.display = 'none';
         dom.byId("VOL_LABELS_SE").style.display = 'none';
-        dom.byId("VOL_LABELS_UTP").style.display = 'none';
+        //dom.byId("VOL_LABELS_UTP").style.display = 'none';
       }
       this._updateVolToggles();
       this._updateLayerDisplayVol();
@@ -2379,12 +2389,12 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         dom.byId("UTP_TOGGLEVOL").innerHTML = sHideTrafficLayerText;
         dom.byId("VOL_LABELS_Vol").style.display = '';
         dom.byId("VOL_LABELS_SE").style.display = '';
-        dom.byId("VOL_LABELS_UTP").style.display = '';
+        //dom.byId("VOL_LABELS_UTP").style.display = '';
       } else {
         dom.byId("UTP_TOGGLEVOL").innerHTML = sShowTrafficLayerText;
         dom.byId("VOL_LABELS_Vol").style.display = 'none';
         dom.byId("VOL_LABELS_SE").style.display = 'none';
-        dom.byId("VOL_LABELS_UTP").style.display = 'none';
+        //dom.byId("VOL_LABELS_UTP").style.display = 'none';
       }
       this._updateVolToggles();
       this._updateLayerDisplayVol();
@@ -2400,7 +2410,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         if (curTab == "SE") {
           dom.byId("VOL_LABELS_Vol").style.display = 'none';
           dom.byId("VOL_LABELS_SE").style.display = 'none';
-          dom.byId("VOL_LABELS_UTP").style.display = 'none';
+          //dom.byId("VOL_LABELS_UTP").style.display = 'none';
         }
       } else {
         dom.byId("SE_TOGGLEVOL").classList.remove('toggleVolUnselected');
@@ -2408,7 +2418,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         if (curTab == "SE") {
           dom.byId("VOL_LABELS_Vol").style.display = '';
           dom.byId("VOL_LABELS_SE").style.display = '';
-          dom.byId("VOL_LABELS_UTP").style.display = '';
+          //dom.byId("VOL_LABELS_UTP").style.display = '';
         }
       }
       
@@ -2418,7 +2428,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         if (curTab == "UTP") {
           dom.byId("VOL_LABELS_Vol").style.display = 'none';
           dom.byId("VOL_LABELS_SE").style.display = 'none';
-          dom.byId("VOL_LABELS_UTP").style.display = 'none';
+          //dom.byId("VOL_LABELS_UTP").style.display = 'none';
         }
       } else {
         dom.byId("UTP_TOGGLEVOL").classList.remove('toggleVolUnselected');
@@ -2426,7 +2436,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         if (curTab == "UTP") {
           dom.byId("VOL_LABELS_Vol").style.display = '';
           dom.byId("VOL_LABELS_SE").style.display = '';
-          dom.byId("VOL_LABELS_UTP").style.display = '';
+          //dom.byId("VOL_LABELS_UTP").style.display = '';
         }
       }
 
